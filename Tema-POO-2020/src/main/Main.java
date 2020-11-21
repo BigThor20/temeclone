@@ -9,6 +9,7 @@ import fileio.Input;
 import fileio.InputLoader;
 import fileio.Writer;
 import org.json.simple.JSONArray;
+import users.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,16 +75,11 @@ public final class Main {
         JSONArray arrayResult = new JSONArray();
 
         //TODO add here the entry point to your implementation
-        Favorite fav =  new Favorite();
+        Database data = new Database(input);
 
-        //input.getCommands();
-        for(ActionInputData com : input.getCommands()){
-            if(com.getActionType().equals("command") && com.getType().equals("favorite")){
-
-                //fav.addToFavorite("SPF-18", "tautBuck1");
-            }
-        }
+        data.init(fileWriter, arrayResult);
 
         fileWriter.closeJSON(arrayResult);
+
     }
 }

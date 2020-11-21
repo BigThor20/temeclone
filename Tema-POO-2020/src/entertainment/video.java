@@ -1,6 +1,8 @@
 package entertainment;
 
-public class video {
+import java.util.ArrayList;
+
+public class Video {
     /**
      * title of video
      * */
@@ -12,9 +14,9 @@ public class video {
     /**
      * category
      * */
-    private Genre gen;
+    private ArrayList<String> gen;
 
-    public video(String title, int year, Genre gen) {
+    public Video(String title, int year, ArrayList<String> gen) {
         this.title = title;
         this.year = year;
         this.gen = gen;
@@ -44,11 +46,11 @@ public class video {
     /**
      * getter and setter for gen
      * */
-    public Genre getGen() {
+    public ArrayList<String> getGen() {
         return gen;
     }
 
-    public void setGen(Genre gen) {
+    public void setGen(ArrayList<String> gen) {
         this.gen = gen;
     }
 }

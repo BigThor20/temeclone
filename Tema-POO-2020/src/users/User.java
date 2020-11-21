@@ -5,28 +5,31 @@ import java.util.List;
 import entertainment.*;
 
 public class User {
-    private List<video> favoriteVideos;
+    private List<Video> favoriteVideos;
     private List<ViewedVideos> viewedVideos;
-    private UserType type;
+    private String type;
+    private String username;
 
 
     /**
      * Constructor for User
      */
-    public User(UserType type){
+    public User( String username, String type){
+        this.username = username;
         this.type = type;
         this.favoriteVideos = new ArrayList<>();
         this.viewedVideos = new ArrayList<>();
     }
 
+
     /**
      * getter and setter for favorite videos
      */
-    public List<video> getFavoriteVideos() {
+    public List<Video> getFavoriteVideos() {
         return favoriteVideos;
     }
 
-    public void setFavoriteVideos(List<video> favoriteVideos) {
+    public void setFavoriteVideos(List<Video> favoriteVideos) {
         this.favoriteVideos = favoriteVideos;
     }
 
@@ -44,25 +47,26 @@ public class User {
     /**
      * getter and setter for user type
      */
-    public UserType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(UserType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
     /**
      * function for add a video in favorite list
      * */
-    public void addToFav(video newVideo){
+    public void addToFav(String title, int year, ArrayList<String> gen){
+        Video newVideo = new Video(title, year, gen);
         favoriteVideos.add(newVideo);
     }
     /**
      * function for add a video in viewed list
      * (create an object and add this to list)
      * */
-    public void addToViewed(video newVideo){
+    public void addToViewed(Video newVideo){
         ViewedVideos viewed =  new ViewedVideos(newVideo);
         viewedVideos.add(viewed);
     }

@@ -3,10 +3,10 @@ package users;
 import entertainment.*;
 
 public class ViewedVideos {
-    private video video;
+    private Video video;
     private int numberOfViews;
 
-    public ViewedVideos(video video) {
+    public ViewedVideos(Video video) {
         this.video = video;
         this.numberOfViews = 0;
     }
@@ -22,11 +22,11 @@ public class ViewedVideos {
     /**
      * getter and setter for a video
      * */
-    public video getVideo() {
+    public Video getVideo() {
         return video;
     }
 
-    public void setVideo(video video) {
+    public void setVideo(Video video) {
         this.video = video;
     }
 }

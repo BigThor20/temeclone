@@ -3,12 +3,12 @@ package entertainment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class movie extends video{
+public class Movie extends Video {
     int duration;
 
     private List<Double> ratings;
 
-    public movie(String title, int year, Genre gen, int duration) {
+    public Movie(String title, int year, ArrayList<String> gen, int duration) {
         super(title, year, gen);
         this.duration = duration;
         this.ratings =  new ArrayList<>();

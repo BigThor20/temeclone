@@ -4,7 +4,7 @@ import entertainment.*;
 import users.*;
 
 public class View {
-    public void view(video newVideo, User user){
+    public void view(Video newVideo, User user){
         for (ViewedVideos i : user.getViewedVideos()){
             /**
              * verify if video has been viewed
