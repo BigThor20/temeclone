@@ -16,8 +16,7 @@ public class Favorite {
 //             * */
 //            if (i.getVideo().getTitle().equals(newVideo.getTitle())){
 //                    user.addToFav(newVideo);
-//            }
-//        }
+//            }/        }
 //    }
 
 }

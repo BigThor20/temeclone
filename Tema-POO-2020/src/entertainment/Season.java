@@ -20,12 +20,12 @@ public final class Season {
     /**
      * List of ratings for each season
      */
-    private List<Double> ratings;
+    private Double ratings;
 
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;
         this.duration = duration;
-        this.ratings = new ArrayList<>();
+        this.ratings = null;
     }
 
     public int getDuration() {
@@ -36,11 +36,11 @@ public final class Season {
         this.duration = duration;
     }
 
-    public List<Double> getRatings() {
+    public Double getRatings() {
         return ratings;
     }
 
-    public void setRatings(final List<Double> ratings) {
+    public void setRatings(final Double ratings) {
         this.ratings = ratings;
     }
 

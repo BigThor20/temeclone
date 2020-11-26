@@ -2,7 +2,6 @@ package main;
 
 import checker.Checkstyle;
 import checker.Checker;
-import commands.Favorite;
 import common.Constants;
 import fileio.ActionInputData;
 import fileio.Input;

@@ -21,7 +21,16 @@ public class User {
         this.viewedVideos = new ArrayList<>();
     }
 
+    /**
+     * getter and setter for username
+     */
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
     /**
      * getter and setter for favorite videos
      */
@@ -70,4 +79,6 @@ public class User {
         ViewedVideos viewed =  new ViewedVideos(newVideo);
         viewedVideos.add(viewed);
     }
+
+
 }

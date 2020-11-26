@@ -8,16 +8,16 @@ public class ViewedVideos {
 
     public ViewedVideos(Video video) {
         this.video = video;
-        this.numberOfViews = 0;
+        this.numberOfViews = 1;
     }
     /**
      * getter and counter for numberOfView
      * */
-    public int getNumberOfViews() {
-        return numberOfViews;
-    }
     public void counter(){
         this.numberOfViews++;
+    }
+    public int getNumberOfViews() {
+        return numberOfViews;
     }
     /**
      * getter and setter for a video
@@ -29,4 +29,5 @@ public class ViewedVideos {
     public void setVideo(Video video) {
         this.video = video;
     }
+
 }

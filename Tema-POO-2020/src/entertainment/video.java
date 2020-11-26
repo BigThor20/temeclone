@@ -15,11 +15,15 @@ public class Video {
      * category
      * */
     private ArrayList<String> gen;
-
+    /**
+     * marked as viewed
+     * */
+    private int markedAsViewed;
     public Video(String title, int year, ArrayList<String> gen) {
         this.title = title;
         this.year = year;
         this.gen = gen;
+        this.markedAsViewed = 0;
     }
 
     /**
@@ -52,5 +56,14 @@ public class Video {
 
     public void setGen(ArrayList<String> gen) {
         this.gen = gen;
+    }
+    /**
+     * set as viewed
+     * */
+    public void setAsViewed(){
+        this.markedAsViewed = 1;
+    }
+    public int getMarkedAsViewed() {
+        return markedAsViewed;
     }
 }
