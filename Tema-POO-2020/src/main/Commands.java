@@ -1,15 +1,15 @@
 package main;
 
 import entertainment.Movie;
+import entertainment.Season;
 import entertainment.TvShow;
 import entertainment.Video;
 import users.User;
-import users.ViewedVideos;
 
 import java.util.ArrayList;
 
 public class Commands {
-    ArrayList<User> users;
+    ArrayList<User> users ;
     ArrayList<Movie> movies;
     ArrayList<TvShow> tvShows;
 
@@ -48,133 +48,124 @@ public class Commands {
     /**
      * method for add a video in fav list
      * */
-    public void addToFavorite(String username, String title){
+    public int addToFavorite(String username, String title){
         User user = null;
-        Video newVideo = null;
 
         if (getUserInDb(username) != null){
             user = getUserInDb(username);
         }
 
-        if(getMovieInDb(title) != null){
-            newVideo = getMovieInDb(title);
-        } else if(getSerialInDb(title) != null){
-            newVideo = getSerialInDb(title);
-        }
         /**
          * verify if user and video exist
          * */
-        if(user != null && newVideo != null) {
+        if(user != null) {
             /**
              * if a video is viewed push in fav list
              * */
-            if(newVideo.getMarkedAsViewed() != 0){
-                user.addToFav(newVideo.getTitle(), newVideo.getYear(), newVideo.getGen());
+            if(user.getViewedVideos().containsKey(title)){
+                /**
+                 * verify if it's already in fav list
+                 * */
+                if (!user.inFavList(title)){
+                    user.addToFav(title);
+                } else{
+                    return 3;
+                }
+            } else {
+                return 2;
             }
-
         }
+        return 1;
     }
     public void addToViewedList(String username, String title){
         User user = null;
-        Video newVideo = null;
 
+        /**
+         * search user in database
+         * */
         if (getUserInDb(username) != null){
             user = getUserInDb(username);
         }
 
-        if(getMovieInDb(title) != null){
-            newVideo = getMovieInDb(title);
-        } else if(getSerialInDb(title) != null){
-            newVideo = getSerialInDb(title);
-        }
-        if(user != null && newVideo != null){
+        if (user != null ){
             /**
-             * if it hasn't view, mark as view and add in list
+             * verify if a video is viewed and
+             *  increment number of views, else
+             *  add to viewedList
              * */
-            if (newVideo.getMarkedAsViewed() == 0){
-                newVideo.setAsViewed();
-                user.addToViewed(newVideo);
-            } else{
-                for (ViewedVideos i : user.getViewedVideos()){
-                    if (i.getVideo().getTitle().equals(newVideo.getTitle())){
-                        /**
-                         * if it has been viewed, increment number of views
-                         * */
-                        i.counter();
-                    }
-                }
+            if (user.getViewedVideos().containsKey(title)){
+                user.getViewedVideos().put(title, user.getViewedVideos().get(title) + 1);
+            } else {
+                user.addToViewed(title,1);
             }
         }
-
-
     }
     /**
      * function for get nr of view of a video
      * */
     public int getNrOfViews(String username, String title){
         User user = null;
-        Video newVideo = null;
         int nr = 0;
 
-        if (getUserInDb(username) != null){
+        if(getUserInDb(username) != null){
             user = getUserInDb(username);
         }
-        // verify if a video is movie or serial
-        if(getMovieInDb(title) != null){
-            newVideo = getMovieInDb(title);
-        } else if(getSerialInDb(title) != null){
-            newVideo = getSerialInDb(title);
-        }
-
-        if (user != null && newVideo != null){
-            for (ViewedVideos i : user.getViewedVideos()){
-                if (i.getVideo().getTitle().equals(newVideo.getTitle())){
-                    nr = i.getNumberOfViews();
-                }
-            }
+        if (user != null){
+            nr = user.getViewedVideos().get(title);
         }
         return nr;
     }
 
-    public void rating(String username, String title, double rating, int seasonNumber){
+
+
+    public int rating(String username, String title, Double rating, int NrSez){
         User user = null;
+        TvShow serial = null;
+        Season season;
         Movie newMovie = null;
-        TvShow newSerial = null;
 
         if (getUserInDb(username) != null){
             user = getUserInDb(username);
         }
-
+        if(getSerialInDb(title) != null){
+            serial = (TvShow) getSerialInDb(title);
+        }
         if(getMovieInDb(title) != null){
             newMovie = (Movie) getMovieInDb(title);
-        } else if(getSerialInDb(title) != null){
-            newSerial = (TvShow) getSerialInDb(title);
         }
-            // verify if video is viewed
-        if (  newMovie != null){
-                /**
-                 * set rating for a movie if it was viewed and
-                 * hasn't another rating
-                 * */
-                if (newMovie.getMarkedAsViewed() != 0 && newMovie.getRatings() != null){
-                    newMovie.setRatings(rating);
+
+        if (user != null ){
+            // verify if it's viewed
+            if (user.getViewedVideos().containsKey(title)){
+                // verify if it's serial
+                if (serial != null){
+                    season = serial.getSeason(NrSez);
+                    //verify if it's already rated by user
+                    if (season != null && !season.getRatings().containsKey(username)){
+                        season.addRating(username, rating);
+                        user.incrementRating();
+                        return 1;
+                    } else {
+                        return 3;
+                    }
                 }
-        }
-
-        if ( newSerial != null){
-            /**
-             * set rating for a tvShow if it was viewed and
-             * hasn't another rating
-             * */
-            if(newSerial.getMarkedAsViewed() != 0 && newSerial.getRating() != null) {
-                //rating pe sezon in functie de data.getNumberOfSeason
-                //fiecare user da rating pe un singur sezon o data
-                //rating ul serialului e media aritmetica a sezoanelor
-
+                //verify if it's movie
+                if (newMovie != null){
+                    //verify if it's already rated by user
+                    if (!newMovie.getRatings().containsKey(username)){
+                        newMovie.addRating(username, rating);
+                        user.incrementRating();
+                        return 1;
+                    } else {
+                        return 3;
+                    }
+                }
+            } else {
+                return 2;
             }
+
         }
-
-
+        return 1;
     }
 
 }

@@ -1,5 +1,6 @@
 package main;
 
+import actor.Actor;
 import fileio.*;
 import org.json.simple.JSONArray;
 import users.User;
@@ -16,12 +17,14 @@ public class Database {
     ArrayList<User> users;
     ArrayList<Movie> movies;
     ArrayList<TvShow> tvShows;
+    ArrayList<Actor> actors;
 
     public Database(Input input) {
         this.input = input;
         users = new ArrayList<>();
         movies = new ArrayList<>();
         tvShows = new ArrayList<>();
+        actors = new ArrayList<>();
 
     }
     public void init(Writer file, JSONArray arr) throws IOException {
@@ -30,10 +33,12 @@ public class Database {
         addMovieToBd();
         addSerialToBd();
         addUsersToBd();
+        addActorsToBd();
         commands();
+        queries();
     }
     /**
-     * add videos and users in bd
+     * add videos, users and actors in bd
      * */
     public void addMovieToBd(){
         for (MovieInputData data : input.getMovies()){
@@ -44,14 +49,22 @@ public class Database {
 
     public void addSerialToBd(){
         for (SerialInputData data : input.getSerials()){
-            TvShow show = new TvShow(data.getTitle(), data.getYear(), data.getGenres(), data.getSeasons());
+            TvShow show = new TvShow(data.getTitle(), data.getYear(), data.getGenres(), data.getSeasons(), data.getNumberSeason());
             tvShows.add(show);
         }
     }
     public void addUsersToBd(){
         for (UserInputData data : input.getUsers()){
-            User user = new User(data.getUsername(), data.getSubscriptionType());
+            User user = new User(data.getUsername(), data.getSubscriptionType(),
+                    data.getFavoriteMovies(), data.getHistory());
             users.add(user);
+        }
+    }
+    public void addActorsToBd(){
+        for (ActorInputData data : input.getActors()){
+            Actor actor = new Actor(data.getName(), data.getCareerDescription(),
+                    data.getFilmography(), data.getAwards());
+            actors.add(actor);
         }
     }
     /**
@@ -59,16 +72,25 @@ public class Database {
      * */
     public void commands() throws IOException {
             Commands command = new Commands(users, movies, tvShows);
-            int nrOfViews = 0;
+            int nrOfViews;
+            int favList;
+            int rating;
             for (ActionInputData data : input.getCommands()) {
                 /**
                  * add movie / tvShow to favoriteList / viewedList
                  * */
                     if (data.getActionType().equals("command") && data.getType().equals("favorite")) {
-                        command.addToFavorite(data.getUsername(), data.getTitle());
-                        arrayResult.add(fileWriter.writeFile(data.getActionId(), "?",
-                                "success -> " + data.getTitle() + " was added as favourite"));
-
+                        favList = command.addToFavorite(data.getUsername(), data.getTitle());
+                        if (favList == 1){
+                            arrayResult.add(fileWriter.writeFile(data.getActionId(), "?",
+                                    "success -> " + data.getTitle() + " was added as favourite"));
+                        } else if(favList == 2){
+                            arrayResult.add(fileWriter.writeFile(data.getActionId(), "?",
+                                    "error -> " + data.getTitle() + " is not seen"));
+                        } else if (favList == 3){
+                            arrayResult.add(fileWriter.writeFile(data.getActionId(), "?",
+                                    "error -> " + data.getTitle() + " is already in favourite list"));
+                        }
                     }
                     if (data.getActionType().equals("command") && data.getType().equals("view")) {
                         command.addToViewedList(data.getUsername(), data.getTitle());
@@ -81,10 +103,19 @@ public class Database {
                      * set rating for movies and tvShows
                      * */
                 if (data.getActionType().equals("command") && data.getType().equals("rating")) {
-                    command.rating(data.getUsername(), data.getTitle(), data.getGrade(), data.getSeasonNumber());
-                    arrayResult.add(fileWriter.writeFile(data.getActionId(), "?",
-                            "success -> " + data.getTitle() + " was rated with " + data.getGrade() + " by "
-                                    + data.getUsername()));
+                     rating = command.rating(data.getUsername(), data.getTitle(), data.getGrade(), data.getSeasonNumber());
+
+                     if (rating == 1){
+                         arrayResult.add(fileWriter.writeFile(data.getActionId(), "?",
+                                 "success -> " + data.getTitle() + " was rated with " + data.getGrade() + " by "
+                                         + data.getUsername()));
+                     } else if (rating == 2){
+                         arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "error -> " +
+                                 data.getTitle() + " is not seen"));
+                     } else if (rating == 3){
+                         arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "error -> " +
+                                 data.getTitle() + " has been already rated"));
+                     }
 
 
                 }
@@ -92,75 +123,79 @@ public class Database {
 
     }
 
-//    public void addToFavorite( String title, String username){
-//        User user = null;
-//        Video newVideo = null;
-//        // search for user and movie/serial
-//        for (User i : users ){
-//            if (i.getUsername().equals(username)){
-//                user = i;
-//            }
-//        }
-//        for (TvShow i : tvShows){
-//            if(i.getTitle().equals(title)){
-//                newVideo = i;
-//            }
-//        }
-//        for (Movie i : movies){
-//            if (i.getTitle().equals(title)){
-//                newVideo = i;
-//            }
-//        }
-//        /**
-//         * verify if video is viewed
-//         * */
-//        for (ViewedVideos i : user.getViewedVideos()){
-//            /**
-//             * verify if a video from viewed list has same title
-//             * with new video and push newVideo to fav list
-//             * */
-//            if (i.getVideo().getTitle().equals(newVideo.getTitle())){
-//                user.addToFav(newVideo.getTitle(), newVideo.getYear(), newVideo.getGen() );
-//            }
-//        }
-//    }
-    // function which add a video in database and return number of view
-//    public void addToViewedList(String title, String username){
-//        User user = null;
-//        Video newVideo = null;
-//
-//        // search for user and movie/serial
-//        for (User i : users ){
-//            if (i.getUsername().equals(username)){
-//                user = i;
-//            }
-//        }
-//        for (TvShow i : tvShows){
-//            if(i.getTitle().equals(title)){
-//                newVideo = i;
-//            }
-//        }
-//        for (Movie i : movies){
-//            if (i.getTitle().equals(title)){
-//                newVideo = i;
-//            }
-//        }
-//        for (ViewedVideos i : user.getViewedVideos()){
-//            /**
-//             * verify if video has been viewed
-//             * */
-//            if (i.getVideo().getTitle().equals(newVideo.getTitle())){
-//                /**
-//                 * if it has been viewed increment number of views
-//                 * */
-//                i.counter();
-//
-//            } else{
-//                user.addToViewed(newVideo);
-//            }
-//        }
-//
-//    }
+    public void queries() throws IOException {
+        Query query = new Query(users, movies, tvShows, actors);
+        ArrayList<String> resultList;
+
+
+        for (ActionInputData data : input.getCommands()){
+            if (data.getActionType().equals("query") && data.getObjectType().equals("actors") &&
+            data.getCriteria().equals("average")){
+                resultList = query.averageActors(data.getNumber(), data.getSortType());
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList ));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("actors") &&
+                    data.getCriteria().equals("awards")){
+                resultList = query.awardsActors(data.getSortType(), data.getFilters().get(3));;
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList ));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("users")){
+                resultList = query.usersRating(data.getNumber(), data.getSortType());
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("movies") &&
+                    data.getCriteria().equals("ratings")){
+                resultList = query.movieRating(data.getNumber(), data.getSortType(), data.getFilters().get(0),
+                        data.getFilters().get(1));
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("shows") &&
+                    data.getCriteria().equals("ratings")){
+                resultList = query.showRating(data.getNumber(), data.getSortType(), data.getFilters().get(0),
+                        data.getFilters().get(1));
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("movies") &&
+                    data.getCriteria().equals("favorite")){
+                resultList = query.favoriteMovies(data.getNumber(), data.getSortType(), data.getFilters().get(0),
+                        data.getFilters().get(1));
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("shows") &&
+                    data.getCriteria().equals("favorite")){
+                resultList = query.favoriteShows(data.getNumber(), data.getSortType(), data.getFilters().get(0),
+                        data.getFilters().get(1));
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("movies") &&
+                    data.getCriteria().equals("longest")){
+                resultList = query.longestMovies(data.getNumber(), data.getSortType(), data.getFilters().get(0),
+                        data.getFilters().get(1));
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("shows") &&
+                    data.getCriteria().equals("longest")){
+                resultList = query.longestShows(data.getNumber(), data.getSortType(), data.getFilters().get(0),
+                        data.getFilters().get(1));
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("movies") &&
+                    data.getCriteria().equals("most_viewed")){
+                resultList = query.mostViewedMovies(data.getNumber(), data.getSortType(), data.getFilters().get(0),
+                        data.getFilters().get(1));
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+            }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("shows") &&
+                    data.getCriteria().equals("most_viewed")){
+                resultList = query.mostViewedShows(data.getNumber(), data.getSortType(), data.getFilters().get(0),
+                        data.getFilters().get(1));
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+            }
+        }
+    }
+
+
 
 
 }
