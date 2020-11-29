@@ -36,6 +36,7 @@ public class Database {
         addActorsToBd();
         commands();
         queries();
+        recommandations();
     }
     /**
      * add videos, users and actors in bd
@@ -139,6 +140,11 @@ public class Database {
                 resultList = query.awardsActors(data.getSortType(), data.getFilters().get(3));;
                 arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList ));
             }
+            if (data.getActionType().equals("query") && data.getObjectType().equals("actors") &&
+                    data.getCriteria().equals("filter_description")){
+                resultList = query.filterDescription(data.getSortType(), data.getFilters().get(2));;
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList ));
+            }
             if (data.getActionType().equals("query") && data.getObjectType().equals("users")){
                 resultList = query.usersRating(data.getNumber(), data.getSortType());
                 arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
@@ -148,7 +154,8 @@ public class Database {
                     data.getCriteria().equals("ratings")){
                 resultList = query.movieRating(data.getNumber(), data.getSortType(), data.getFilters().get(0),
                         data.getFilters().get(1));
-                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
+                System.out.println(data.getActionId() + " -> " + resultList);
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), null, "Query result: " + resultList));
             }
             if (data.getActionType().equals("query") && data.getObjectType().equals("shows") &&
                     data.getCriteria().equals("ratings")){
@@ -193,6 +200,45 @@ public class Database {
                 arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "Query result: " + resultList));
             }
         }
+    }
+
+    public void recommandations() throws IOException {
+        String result;
+        ArrayList<String> resultList = new ArrayList<String>();
+        Recommandation recommand = new Recommandation(users, movies, tvShows);
+        for (ActionInputData data : input.getCommands()){
+            if (data.getActionType().equals("recommendation")  &&  data.getType().equals("standard")){
+                result = recommand.standard(data.getUsername());
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "StandardRecommendation result: " + result));
+            }
+            if (data.getActionType().equals("recommendation")  &&  data.getType().equals("best_unseen")){
+                result = recommand.bestUnseen(data.getUsername());
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "BestRatedUnseenRecommendation result: " + result));
+            }
+            if (data.getActionType().equals("recommendation")  &&  data.getType().equals("popular")){
+                result = recommand.popularVideo(data.getUsername());
+                if (result != null){
+                    arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "PopularRecommendation result: " + result));
+                } else {
+                    arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "PopularRecommendation cannot be applied!"));
+                }
+
+            }
+            if (data.getActionType().equals("recommendation")  &&  data.getType().equals("favorite")){
+                result = recommand.favoriteVideo(data.getUsername());
+                arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "FavoriteRecommendation result: " + result));
+            }
+            if (data.getActionType().equals("recommendation")  &&  data.getType().equals("search")){
+                resultList = recommand.searchVideos(data.getUsername(), data.getGenre());
+                if (resultList.size() != 0){
+                    arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "SearchRecommendation result: " + resultList));
+                } else {
+                    arrayResult.add(fileWriter.writeFile(data.getActionId(), "?", "SearchRecommendation cannot be applied!"));
+                }
+
+            }
+        }
+
     }
 
 

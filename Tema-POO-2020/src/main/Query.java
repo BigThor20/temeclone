@@ -219,6 +219,49 @@ public class Query {
        return null;
     }
     /**
+     * function for generate list with actors which contains
+     * all keywords in description
+     * */
+    public ArrayList<String> filterDescription(String sortType, List<String> words){
+        ArrayList<String> finalList = new ArrayList<String>();
+        Map<String, Integer> correctActors =  new HashMap<String, Integer>();
+        for (Actor actor : actors){
+            if (verifyDescription(actor,words) != null){
+                correctActors.put(actor.getName(), 1);
+            }
+        }
+        //sort HashMap just by alphabetic order, because values are 1(all)
+        correctActors = sortHashMapInt(correctActors, sortType);
+        //generate final List
+        for (Map.Entry mapElement : correctActors.entrySet()){
+            finalList.add((String) mapElement.getKey());
+        }
+        return finalList;
+    }
+
+    public Actor verifyDescription(Actor actor, List<String> words){
+        //generate an array of word from actor description
+        String[] wordsArray = actor.getCareerDescription().split("[^a-zA-Z]+");
+        boolean contains = false;
+       for (String keyword : words){
+           contains = false;
+           // search keyword in actorDescription
+           for (String word : wordsArray){
+               if (keyword.equals(word)){
+                   contains = true;
+               }
+           }
+           // if i don't find a keyword in actor desciption return null
+           if (contains != true){
+               return null;
+           }
+       }
+       if (contains){
+           return actor;
+       }
+        return null;
+    }
+    /**
      * function for filter movie by year and genre
      * */
     public Movie movieFilter(Movie movie,List<String> years, List<String> genre){
@@ -240,16 +283,21 @@ public class Query {
         }
 
         //verify if it's same gen with filter
-        for (String filterGen : genre){
-            if (filterGen != null){
-                for (String gen : movie.getGen()){
-                    //if exist one gen in movie genres set confirm to true
-                    if (filterGen.equals(gen)){
-                        confirm_gen = true;
+        if (genre != null){
+            for (String filterGen : genre){
+                if (filterGen != null){
+                    for (String gen : movie.getGen()){
+                        //if exist one gen in movie genres set confirm to true
+                        if (filterGen.equals(gen)){
+                            confirm_gen = true;
+                        }
                     }
                 }
             }
+        } else {
+            confirm_gen = true;
         }
+
 
         if (confirm_gen && confirm_year){
             return movie;
@@ -262,6 +310,7 @@ public class Query {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Double> ratings =  new HashMap<String, Double>();
+
 
         //put movies in HashTable
         for (Movie movie : movies){
@@ -283,6 +332,8 @@ public class Query {
             finalList.add(auxList.get(i));
             i++;
         }
+
+        System.out.println("final: " + finalList);
         return finalList;
     }
     /**
@@ -307,14 +358,19 @@ public class Query {
         }
 
         //verify if it's same gen with filter
-        for (String filterGen : genre){
-            for (String gen : show.getGen()){
-                //if exist one gen in movie genres set confirm to true
-                if (filterGen.equals(gen)){
-                    confirm_gen = true;
+        if (genre != null){
+            for (String filterGen : genre){
+                for (String gen : show.getGen()){
+                    //if exist one gen in movie genres set confirm to true
+                    if (filterGen.equals(gen)){
+                        confirm_gen = true;
+                    }
                 }
             }
+        } else {
+            confirm_gen = true;
         }
+
 
         if (confirm_gen && confirm_year){
             return show;
@@ -380,6 +436,8 @@ public class Query {
         favAppears = sortHashMapInt(favAppears, sortType);
 
         for (Map.Entry mapElement : favAppears.entrySet()){
+            auxList.add((String) mapElement.getKey());
+        }for (Map.Entry mapElement : favAppears.entrySet()){
             auxList.add((String) mapElement.getKey());
         }
         // push in list just first nrOfMovies movies

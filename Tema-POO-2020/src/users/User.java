@@ -124,5 +124,18 @@ public class User {
         return nr;
 
     }
+    /**
+     * method for verify if a video it's viewed
+     * */
+    public boolean inViewedList(String title){
+        if (viewedVideos != null){
+            for (Map.Entry mapElement : viewedVideos.entrySet()){
+                if (mapElement.getKey().equals(title)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }
