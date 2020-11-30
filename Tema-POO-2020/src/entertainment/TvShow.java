@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class TvShow extends Video {
     private ArrayList<Season> seasonsList;
-    private Double rating ;
+    private Double rating;
     private int nrOfSez;
 
     /**
      * constructor for a TvShow
-     * */
+     */
     public TvShow(String title, int year, ArrayList<String> gen, ArrayList<Season> season, int nrOfSez) {
         super(title, year, gen);
         this.seasonsList = season;
@@ -41,39 +41,41 @@ public class TvShow extends Video {
         this.nrOfSez = nrOfSez;
     }
 
-    public Season getSeason(int number){
+    public Season getSeason(int number) {
         int nr = 1;
-        for (Season i : seasonsList){
-            if (nr == number){
+        for (Season i : seasonsList) {
+            if (nr == number) {
                 return i;
             }
             nr++;
         }
-        return  null;
+        return null;
     }
+
     // function for calculate Serial rating
-    public Double averageRating(){
+    public Double averageRating() {
 
         Double soum = 0.0;
-        for (Season i : seasonsList){
+        for (Season i : seasonsList) {
             soum = soum + i.averageRating();
 
         }
-        if (this.nrOfSez != 0){
+        if (this.nrOfSez != 0) {
             return (soum / this.nrOfSez);
-        } else{
+        } else {
             return 0.0;
         }
 
     }
+
     //function for calculate serial duration
-    public int getDuration(){
+    public int getDuration() {
         int soum = 0;
-        for (Season i : seasonsList){
+        for (Season i : seasonsList) {
             soum = soum + i.getDuration();
         }
-        if (this.nrOfSez != 0){
-            return  soum;
+        if (this.nrOfSez != 0) {
+            return soum;
         } else {
             return 0;
         }

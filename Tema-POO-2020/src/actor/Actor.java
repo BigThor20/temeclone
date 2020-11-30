@@ -16,9 +16,10 @@ public class Actor {
         this.filmography = filmography;
 
     }
+
     /**
      * getters and setters for elements
-     * */
+     */
     public String getName() {
         return name;
     }
@@ -51,17 +52,18 @@ public class Actor {
         this.awards = awards;
     }
 
-    public int totalNumberOfAwards(){
+    public int totalNumberOfAwards() {
         int nr = 0;
-        for (Map.Entry mapElement : awards.entrySet()){
-            nr = nr +  (int) mapElement.getValue();
+        for (Map.Entry mapElement : awards.entrySet()) {
+            nr = nr + (int) mapElement.getValue();
         }
         return nr;
     }
-    public boolean hasAward(String award){
 
-        for (Map.Entry mapElement : awards.entrySet()){
-            if (mapElement.getKey().toString().equals(award)){
+    public boolean hasAward(String award) {
+
+        for (Map.Entry mapElement : awards.entrySet()) {
+            if (mapElement.getKey().toString().equals(award)) {
                 return true;
             }
         }

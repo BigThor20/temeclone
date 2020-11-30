@@ -8,16 +8,17 @@ import java.util.Map;
 public class Movie extends Video {
     int duration;
 
-    private Map<String, Double> ratings ;
+    private Map<String, Double> ratings;
 
     public Movie(String title, int year, ArrayList<String> gen, int duration) {
         super(title, year, gen);
         this.duration = duration;
-        this.ratings =  new HashMap<String, Double>();
+        this.ratings = new HashMap<String, Double>();
     }
+
     /**
      * getter and setter for duration of a movie
-     * */
+     */
     public int getDuration() {
         return duration;
     }
@@ -28,7 +29,7 @@ public class Movie extends Video {
 
     /**
      * getter and setter for rating of a movie
-     * */
+     */
     public Map<String, Double> getRatings() {
         return ratings;
     }
@@ -36,25 +37,27 @@ public class Movie extends Video {
     public void setRatings(Map<String, Double> ratings) {
         this.ratings = ratings;
     }
+
     /**
      * add rating from a user
-     * */
-    public void addRating(String Username, Double rating){
-        ratings.put(Username,rating);
+     */
+    public void addRating(String Username, Double rating) {
+        ratings.put(Username, rating);
     }
+
     /**
      * calculate average rating for a movie
-     * */
-    public Double averageRating(){
+     */
+    public Double averageRating() {
         int nr = 0;
         Double soum = 0.0;
-        for (Map.Entry mapElement : ratings.entrySet()){
-            soum = soum + (Double)mapElement.getValue();
+        for (Map.Entry mapElement : ratings.entrySet()) {
+            soum = soum + (Double) mapElement.getValue();
             nr++;
         }
-        if (nr !=0){
+        if (nr != 0) {
             return (soum / nr);
-        } else{
+        } else {
             return 0.0;
         }
     }

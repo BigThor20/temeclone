@@ -46,23 +46,23 @@ public final class Season {
         this.ratings = ratings;
     }
 
-    public void addRating(String username, Double rating){
-        ratings.put(username,rating);
+    public void addRating(String username, Double rating) {
+        ratings.put(username, rating);
     }
 
     // return average rating for a season
-    public Double averageRating(){
+    public Double averageRating() {
         int nr = 0;
         double soum = 0.0;
-        for (Map.Entry mapElement : ratings.entrySet()){
-            soum = soum + (Double)mapElement.getValue();
+        for (Map.Entry mapElement : ratings.entrySet()) {
+            soum = soum + (Double) mapElement.getValue();
             nr++;
 
         }
         //if it hasn't ratings, return 0
-        if (nr != 0){
+        if (nr != 0) {
             return (soum / nr);
-        } else{
+        } else {
             return 0.0;
         }
 
