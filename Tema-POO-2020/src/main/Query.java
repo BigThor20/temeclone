@@ -179,7 +179,7 @@ public class Query {
         ArrayList<String> finalList = new ArrayList<String>();
         Map<String, Integer> totalAwards =  new HashMap<String, Integer>();
         for (Actor actor : actors){
-            if (verifyAwards(actor, awards) != null){
+            if (verifyAwards(actor, awards)){
                 //put total number of awards in HashMap
                 totalAwards.put(actor.getName(), actor.totalNumberOfAwards());
             }
@@ -189,34 +189,19 @@ public class Query {
 
         for (Map.Entry mapElement : totalAwards.entrySet()){
             finalList.add((String) mapElement.getKey());
-        }
 
+        }
         return finalList;
     }
+
     // function for verify if an actor has all awards from list
-    public Actor verifyAwards(Actor actor , List<String> awards){
-        boolean hasAwards = false;
+    public boolean verifyAwards(Actor actor , List<String> awards){
         for (String award : awards){
-            if (award != null){
-                hasAwards = false;
-                // search award
-                for (Map.Entry mapElement : actor.getAwards().entrySet()){
-                    // if i found award set hasAwards to true
-                    if (mapElement.getKey().equals(award)){
-                        hasAwards = true;
-                    }
-                }
-                // if we don't find an award return null
-                if (!hasAwards ){
-                    return null;
-                }
+            if (!actor.hasAward(award)){
+                return false;
             }
         }
-        // if we find all awards return actor
-        if (hasAwards ){
-            return actor;
-        }
-       return null;
+       return true;
     }
     /**
      * function for generate list with actors which contains
@@ -242,11 +227,13 @@ public class Query {
     public Actor verifyDescription(Actor actor, List<String> words){
         //generate an array of word from actor description
         String[] wordsArray = actor.getCareerDescription().split("[^a-zA-Z]+");
+
         boolean contains = false;
        for (String keyword : words){
            contains = false;
            // search keyword in actorDescription
            for (String word : wordsArray){
+               word = word.toLowerCase();
                if (keyword.equals(word)){
                    contains = true;
                }
@@ -269,7 +256,7 @@ public class Query {
         boolean confirm_year = false;
         boolean confirm_gen = false;
         //verify if it's same year with filter
-        if (years != null){
+        if (years.get(0) != null){
             for (String year : years){
                 if (year != null){
                     y = Integer.parseInt(year);
@@ -283,7 +270,7 @@ public class Query {
         }
 
         //verify if it's same gen with filter
-        if (genre != null){
+        if (genre.get(0) != null){
             for (String filterGen : genre){
                 if (filterGen != null){
                     for (String gen : movie.getGen()){
@@ -333,7 +320,6 @@ public class Query {
             i++;
         }
 
-        System.out.println("final: " + finalList);
         return finalList;
     }
     /**
@@ -344,7 +330,7 @@ public class Query {
         boolean confirm_year = false;
         boolean confirm_gen = false;
         //verify if it's same year with filter
-        if (years != null){
+        if (years.get(0) != null){
             for (String year : years){
                 if (year != null){
                     y = Integer.parseInt(year);
@@ -358,7 +344,7 @@ public class Query {
         }
 
         //verify if it's same gen with filter
-        if (genre != null){
+        if (genre.get(0) != null){
             for (String filterGen : genre){
                 for (String gen : show.getGen()){
                     //if exist one gen in movie genres set confirm to true
@@ -437,8 +423,7 @@ public class Query {
 
         for (Map.Entry mapElement : favAppears.entrySet()){
             auxList.add((String) mapElement.getKey());
-        }for (Map.Entry mapElement : favAppears.entrySet()){
-            auxList.add((String) mapElement.getKey());
+
         }
         // push in list just first nrOfMovies movies
         int i =0;

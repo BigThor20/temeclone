@@ -58,4 +58,13 @@ public class Actor {
         }
         return nr;
     }
+    public boolean hasAward(String award){
+
+        for (Map.Entry mapElement : awards.entrySet()){
+            if (mapElement.getKey().toString().equals(award)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

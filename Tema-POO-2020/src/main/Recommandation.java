@@ -75,90 +75,32 @@ public class Recommandation {
      * */
     public String bestUnseen(String username){
         User user = null;
-        ArrayList<String> listOfMovies;
-        ArrayList<String> listOfShows;
-        int nrOfMovies = 0;
-        int nrOfShows = 0;
 
         if (getUserInDb(username) != null){
             user = getUserInDb(username);
         }
-        for (Movie i : movies){
-            nrOfMovies++;
-        }
-        for (TvShow show : tvShows){
-            nrOfShows++;
-        }
-        //create list from History
+        String result = null;
+        Double rating = -1.0;
         if (user != null){
-            // use querry.rating for descendent order list
-            listOfMovies = movieRating(nrOfMovies, "desc", null, null);
-            for (String movie : listOfMovies){
-                if (!user.inViewedList(movie)){
-                    return movie;
+            for (Movie movie : movies){
+                if (!user.inViewedList(movie.getTitle())){
+                    if (movie.averageRating() > rating){
+                        rating = movie.averageRating();
+                        result = movie.getTitle();
+                    }
+                }
+
+            }
+            for (TvShow show : tvShows){
+                if (!user.inViewedList(show.getTitle())){
+                    if (show.averageRating() > rating){
+                        rating = show.averageRating();
+                        result = show.getTitle();
+                    }
                 }
             }
-            //use querry rating for descendent order list
-            listOfShows = showRating(nrOfShows, "desc", null, null);
-            for (String show : listOfShows){
-                if (!user.inViewedList(show)){
-                    return show;
-                }
-            }
         }
-        return null;
-    }
-    /**
-     * method for generate best videos
-     * */
-    public ArrayList<String> movieRating(int nrOfMovies, String sortType, List<String> years, List<String> gen){
-        ArrayList<String> finalList = new ArrayList<String>();
-        ArrayList<String> auxList = new ArrayList<String>();
-        Map<String, Double> ratings =  new HashMap<String, Double>();
-
-        //put movies in HashTable
-        for (Movie movie : movies){
-                //filter for year and gen
-                    ratings.put(movie.getTitle(), movie.averageRating());
-        }
-        //sort Movies
-        ratings = sortHashMap(ratings, sortType);
-        for (Map.Entry mapElement : ratings.entrySet()){
-            auxList.add((String) mapElement.getKey());
-        }
-        // push in list just first nrOfMovies movies
-        int i =0;
-        while(i < nrOfMovies && i < auxList.size()){
-            finalList.add(auxList.get(i));
-            i++;
-        }
-        return finalList;
-    }
-
-    public ArrayList<String> showRating(int nrOfShows, String sortType, List<String> years, List<String> gen){
-        ArrayList<String> finalList = new ArrayList<String>();
-        ArrayList<String> auxList = new ArrayList<String>();
-        Map<String, Double> ratings =  new HashMap<String, Double>();
-
-        //put movies in HashTable
-        for (TvShow show : tvShows){
-            if (show.averageRating() != 0){
-                //filter for year and gen
-                    ratings.put(show.getTitle(), show.averageRating());
-            }
-        }
-        //sort Movies
-        ratings = sortHashMap(ratings, sortType);
-        for (Map.Entry mapElement : ratings.entrySet()){
-            auxList.add((String) mapElement.getKey());
-        }
-        // push in list just first nrOfMovies movies
-        int i =0;
-        while(i < nrOfShows && i < auxList.size()){
-            finalList.add(auxList.get(i));
-            i++;
-        }
-        return finalList;
+        return result;
     }
     /**
      * method for sort a HashMap with comparator
