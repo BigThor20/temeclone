@@ -10,38 +10,41 @@ public class TvShow extends Video {
     /**
      * constructor for a TvShow
      */
-    public TvShow(String title, int year, ArrayList<String> gen, ArrayList<Season> season, int nrOfSez) {
+    public TvShow(final String title, final int year, final ArrayList<String> gen,
+                  final ArrayList<Season> season, final int nrOfSez) {
         super(title, year, gen);
         this.seasonsList = season;
         this.rating = null;
         this.nrOfSez = nrOfSez;
     }
 
-    public ArrayList<Season> getSeasonsList() {
+    public final ArrayList<Season> getSeasonsList() {
         return seasonsList;
     }
 
-    public void setSeasonsList(ArrayList<Season> season) {
+    public final void setSeasonsList(final ArrayList<Season> season) {
         this.seasonsList = season;
     }
 
-    public Double getRating() {
+    public final Double getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public final void setRating(final Double rating) {
         this.rating = rating;
     }
 
-    public int getNrOfSez() {
+    public final int getNrOfSez() {
         return nrOfSez;
     }
 
-    public void setNrOfSez(int nrOfSez) {
+    public final void setNrOfSez(final int nrOfSez) {
         this.nrOfSez = nrOfSez;
     }
-
-    public Season getSeason(int number) {
+    /**
+     * method that return a season
+     * */
+    public Season getSeason(final int number) {
         int nr = 1;
         for (Season i : seasonsList) {
             if (nr == number) {
@@ -51,8 +54,9 @@ public class TvShow extends Video {
         }
         return null;
     }
-
-    // function for calculate Serial rating
+    /**
+     * function for calculate Serial rating
+     * */
     public Double averageRating() {
 
         Double soum = 0.0;
@@ -65,10 +69,10 @@ public class TvShow extends Video {
         } else {
             return 0.0;
         }
-
     }
-
-    //function for calculate serial duration
+    /**
+     * function for calculate serial duration
+     * */
     public int getDuration() {
         int soum = 0;
         for (Season i : seasonsList) {
@@ -80,5 +84,4 @@ public class TvShow extends Video {
             return 0;
         }
     }
-
 }

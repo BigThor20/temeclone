@@ -20,7 +20,7 @@ public class Video {
      * marked as viewed
      */
 
-    public Video(String title, int year, ArrayList<String> gen) {
+    public Video(final String title, final int year, final ArrayList<String> gen) {
         this.title = title;
         this.year = year;
         this.gen = gen;
@@ -34,7 +34,7 @@ public class Video {
         return title;
     }
 
-    public void setTitle(String title) {
+    public final void setTitle(final String title) {
         this.title = title;
     }
 
@@ -45,7 +45,7 @@ public class Video {
         return year;
     }
 
-    public void setYear(int year) {
+    public final void setYear(final int year) {
         this.year = year;
     }
 
@@ -56,7 +56,7 @@ public class Video {
         return gen;
     }
 
-    public void setGen(ArrayList<String> gen) {
+    public final void setGen(final ArrayList<String> gen) {
         this.gen = gen;
     }
 

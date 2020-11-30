@@ -3,29 +3,28 @@ package main;
 import actor.Actor;
 import entertainment.Movie;
 import entertainment.TvShow;
-import entertainment.Video;
 import users.User;
 
 import java.util.*;
 
 
 public class Query {
-    ArrayList<User> users;
-    ArrayList<Movie> movies;
-    ArrayList<TvShow> tvShows;
-    ArrayList<Actor> actors;
+    private final ArrayList<User> users;
+    private final ArrayList<Movie> movies;
+    private final ArrayList<TvShow> tvShows;
+    private final ArrayList<Actor> actors;
 
-    public Query(ArrayList<User> users, ArrayList<Movie> movies, ArrayList<TvShow> tvShows, ArrayList<Actor> actors) {
+    public Query(final ArrayList<User> users, final ArrayList<Movie> movies,
+                 final ArrayList<TvShow> tvShows, final ArrayList<Actor> actors) {
         this.users = users;
         this.movies = movies;
         this.tvShows = tvShows;
         this.actors = actors;
     }
-
     /**
      * methods for search a user and a video in db
      */
-    public User getUserInDb(String username) {
+    public User getUserInDb(final String username) {
         for (User i : users) {
             if (i.getUsername().equals(username)) {
                 return i;
@@ -33,8 +32,10 @@ public class Query {
         }
         return null;
     }
-
-    public Movie getMovieInDb(String title) {
+    /**
+     * search a movie in database
+     * */
+    public Movie getMovieInDb(final String title) {
         for (Movie i : movies) {
             if (i.getTitle().equals(title)) {
                 return i;
@@ -42,8 +43,10 @@ public class Query {
         }
         return null;
     }
-
-    public TvShow getSerialInDb(String title) {
+    /**
+     * search a show in database
+     * */
+    public TvShow getSerialInDb(final String title) {
         for (TvShow i : tvShows) {
             if (i.getTitle().equals(title)) {
                 return i;
@@ -51,28 +54,27 @@ public class Query {
         }
         return null;
     }
-
     /**
      * method for sort a HashMap by 2 criteries
      */
-    private static Map<String, Double> sortHashMap(Map<String, Double> unsortMap, String sortType) {
+    private static Map<String, Double> sortHashMap(final Map<String, Double> unsortMap,
+                                                   final String sortType) {
         List<Map.Entry<String, Double>> list =
                 new LinkedList<Map.Entry<String, Double>>(unsortMap.entrySet());
 
         Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
-            public int compare(Map.Entry<String, Double> obj1,
-                               Map.Entry<String, Double> obj2) {
+            public int compare(final Map.Entry<String, Double> obj1,
+                               final Map.Entry<String, Double> obj2) {
                 if (!obj1.getValue().equals(obj2.getValue())) {
-                    if (sortType.equals("desc")) {
-                        return (obj2.getValue()).compareTo(obj1.getValue());
+                    if (sortType.equals("asc")) {
+                        return (obj1.getValue().compareTo(obj2.getValue()));
                     }
-
-                    return (obj1.getValue().compareTo(obj2.getValue()));
+                    return (obj2.getValue()).compareTo(obj1.getValue());
                 } else {
-                    if (sortType.equals("desc")) {
-                        return (obj2.getKey().compareTo(obj1.getKey()));
+                    if (sortType.equals("asc")) {
+                        return (obj1.getKey().compareTo(obj2.getKey()));
                     }
-                    return (obj1.getKey().compareTo(obj2.getKey()));
+                    return (obj2.getKey().compareTo(obj1.getKey()));
                 }
 
             }
@@ -84,28 +86,28 @@ public class Query {
         }
         return sortedMap;
     }
-
-    //sort for int
-    private static Map<String, Integer> sortHashMapInt(Map<String, Integer> unsortMap, String sortType) {
+    /**
+     * sort hashMap for integer value
+     * */
+    private static Map<String, Integer> sortHashMapInt(final Map<String, Integer> unsortMap,
+                                                       final String sortType) {
         List<Map.Entry<String, Integer>> list =
                 new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
 
         Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            public int compare(Map.Entry<String, Integer> obj1,
-                               Map.Entry<String, Integer> obj2) {
+            public int compare(final Map.Entry<String, Integer> obj1,
+                               final Map.Entry<String, Integer> obj2) {
                 if (!obj1.getValue().equals(obj2.getValue())) {
-                    if (sortType.equals("desc")) {
-                        return (obj2.getValue()).compareTo(obj1.getValue());
+                    if (sortType.equals("asc")) {
+                        return (obj1.getValue().compareTo(obj2.getValue()));
                     }
-
-                    return (obj1.getValue().compareTo(obj2.getValue()));
+                    return (obj2.getValue()).compareTo(obj1.getValue());
                 } else {
-                    if (sortType.equals("desc")) {
-                        return (obj2.getKey().compareTo(obj1.getKey()));
+                    if (sortType.equals("asc")) {
+                        return (obj1.getKey().compareTo(obj2.getKey()));
                     }
-                    return (obj1.getKey().compareTo(obj2.getKey()));
+                    return (obj2.getKey().compareTo(obj1.getKey()));
                 }
-
             }
         });
 
@@ -115,8 +117,10 @@ public class Query {
         }
         return sortedMap;
     }
-
-    public ArrayList<String> averageActors(int nrOfActors, String sortType) {
+    /**
+     * method for average query at actors
+     * */
+    public ArrayList<String> averageActors(final int nrOfActors, final String sortType) {
         ArrayList<String> filmography = new ArrayList<String>();
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
@@ -165,8 +169,8 @@ public class Query {
 
         actorsAverage = sortHashMap(actorsAverage, sortType);
 
-        for (Map.Entry mapElement : actorsAverage.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Double> mapElement : actorsAverage.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
         //aici e o problema pt ca unii actori sunt mai multi decat final list
 
@@ -181,7 +185,7 @@ public class Query {
     /**
      * function for generate all actors with specify awards
      */
-    public ArrayList<String> awardsActors(String sortType, List<String> awards) {
+    public ArrayList<String> awardsActors(final String sortType, final List<String> awards) {
         ArrayList<String> finalList = new ArrayList<String>();
         Map<String, Integer> totalAwards = new HashMap<String, Integer>();
         for (Actor actor : actors) {
@@ -193,15 +197,16 @@ public class Query {
         //sort HashMap by sortType criteria
         totalAwards = sortHashMapInt(totalAwards, sortType);
 
-        for (Map.Entry mapElement : totalAwards.entrySet()) {
-            finalList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : totalAwards.entrySet()) {
+            finalList.add(mapElement.getKey());
 
         }
         return finalList;
     }
-
-    // function for verify if an actor has all awards from list
-    public boolean verifyAwards(Actor actor, List<String> awards) {
+    /**
+     * function for verify if an actor has all awards from list
+     * */
+    public final boolean verifyAwards(final Actor actor, final List<String> awards) {
         for (String award : awards) {
             if (!actor.hasAward(award)) {
                 return false;
@@ -214,7 +219,8 @@ public class Query {
      * function for generate list with actors which contains
      * all keywords in description
      */
-    public ArrayList<String> filterDescription(String sortType, List<String> words) {
+    public ArrayList<String> filterDescription(final String sortType,
+                                               final List<String> words) {
         ArrayList<String> finalList = new ArrayList<String>();
         Map<String, Integer> correctActors = new HashMap<String, Integer>();
         for (Actor actor : actors) {
@@ -225,13 +231,15 @@ public class Query {
         //sort HashMap just by alphabetic order, because values are 1(all)
         correctActors = sortHashMapInt(correctActors, sortType);
         //generate final List
-        for (Map.Entry mapElement : correctActors.entrySet()) {
-            finalList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : correctActors.entrySet()) {
+            finalList.add(mapElement.getKey());
         }
         return finalList;
     }
-
-    public Actor verifyDescription(Actor actor, List<String> words) {
+    /**
+     * method that verify if a description contains words from list
+     * */
+    public final Actor verifyDescription(final Actor actor, final List<String> words) {
         //generate an array of word from actor description
         String[] wordsArray = actor.getCareerDescription().split("[^a-zA-Z]+");
 
@@ -246,7 +254,7 @@ public class Query {
                 }
             }
             // if i don't find a keyword in actor desciption return null
-            if (contains != true) {
+            if (!contains) {
                 return null;
             }
         }
@@ -255,28 +263,27 @@ public class Query {
         }
         return null;
     }
-
     /**
      * function for filter movie by year and genre
      */
-    public Movie movieFilter(Movie movie, List<String> years, List<String> genre) {
+    public Movie movieFilter(final Movie movie, final List<String> years,
+                             final List<String> genre) {
         int y;
-        boolean confirm_year = false;
-        boolean confirm_gen = false;
+        boolean confirmYear = false;
+        boolean confirmGen = false;
         //verify if it's same year with filter
         if (years.get(0) != null) {
             for (String year : years) {
                 if (year != null) {
                     y = Integer.parseInt(year);
                     if (movie.getYear() == y) {
-                        confirm_year = true;
+                        confirmYear = true;
                     }
                 }
             }
         } else {
-            confirm_year = true;
+            confirmYear = true;
         }
-
         //verify if it's same gen with filter
         if (genre.get(0) != null) {
             for (String filterGen : genre) {
@@ -284,29 +291,29 @@ public class Query {
                     for (String gen : movie.getGen()) {
                         //if exist one gen in movie genres set confirm to true
                         if (filterGen.equals(gen)) {
-                            confirm_gen = true;
+                            confirmGen = true;
                         }
                     }
                 }
             }
         } else {
-            confirm_gen = true;
+            confirmGen = true;
         }
 
-
-        if (confirm_gen && confirm_year) {
+        if (confirmGen && confirmYear) {
             return movie;
         } else {
             return null;
         }
     }
-
-    public ArrayList<String> movieRating(int nrOfMovies, String sortType, List<String> years, List<String> gen) {
+    /**
+     * method that sort movies by rating
+     * */
+    public final ArrayList<String> movieRating(final int nrOfMovies, final String sortType,
+                                         final List<String> years, final List<String> gen) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Double> ratings = new HashMap<String, Double>();
-
-
         //put movies in HashTable
         for (Movie movie : movies) {
             if (movie.averageRating() != 0) {
@@ -318,8 +325,8 @@ public class Query {
         }
         //sort Movies
         ratings = sortHashMap(ratings, sortType);
-        for (Map.Entry mapElement : ratings.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Double> mapElement : ratings.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
         // push in list just first nrOfMovies movies
         int i = 0;
@@ -330,26 +337,26 @@ public class Query {
 
         return finalList;
     }
-
     /**
      * function for filter movie by year and genre
      */
-    public TvShow showFilter(TvShow show, List<String> years, List<String> genre) {
+    public TvShow showFilter(final TvShow show, final List<String> years,
+                             final List<String> genre) {
         int y;
-        boolean confirm_year = false;
-        boolean confirm_gen = false;
+        boolean confirmYear = false;
+        boolean confirmGen = false;
         //verify if it's same year with filter
         if (years.get(0) != null) {
             for (String year : years) {
                 if (year != null) {
                     y = Integer.parseInt(year);
                     if (show.getYear() == y) {
-                        confirm_year = true;
+                        confirmYear = true;
                     }
                 }
             }
         } else {
-            confirm_year = true;
+            confirmYear = true;
         }
 
         //verify if it's same gen with filter
@@ -358,23 +365,26 @@ public class Query {
                 for (String gen : show.getGen()) {
                     //if exist one gen in movie genres set confirm to true
                     if (filterGen.equals(gen)) {
-                        confirm_gen = true;
+                        confirmGen = true;
                     }
                 }
             }
         } else {
-            confirm_gen = true;
+            confirmGen = true;
         }
 
 
-        if (confirm_gen && confirm_year) {
+        if (confirmGen && confirmYear) {
             return show;
         } else {
             return null;
         }
     }
-
-    public ArrayList<String> showRating(int nrOfShows, String sortType, List<String> years, List<String> gen) {
+    /**
+     * returns first nrOfShows shows by rating
+     * */
+    public ArrayList<String> showRating(final int nrOfShows, final String sortType,
+                                        final List<String> years, final List<String> gen) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Double> ratings = new HashMap<String, Double>();
@@ -386,14 +396,12 @@ public class Query {
                 if (showFilter(show, years, gen) != null) {
                     ratings.put(show.getTitle(), show.averageRating());
                 }
-
-
             }
         }
         //sort Movies
         ratings = sortHashMap(ratings, sortType);
-        for (Map.Entry mapElement : ratings.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Double> mapElement : ratings.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
         // push in list just first nrOfMovies movies
         int i = 0;
@@ -403,8 +411,11 @@ public class Query {
         }
         return finalList;
     }
-
-    public ArrayList<String> favoriteMovies(int nrOfMovies, String sortType, List<String> years, List<String> gen) {
+    /**
+     * return first nrOfMovies by appearing in favorite list
+     * */
+    public ArrayList<String> favoriteMovies(final int nrOfMovies, final String sortType,
+                                            final List<String> years, final List<String> gen) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Integer> favAppears = new HashMap<String, Integer>();
@@ -432,8 +443,8 @@ public class Query {
         //sort HashMap by sortType criteria
         favAppears = sortHashMapInt(favAppears, sortType);
 
-        for (Map.Entry mapElement : favAppears.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : favAppears.entrySet()) {
+            auxList.add(mapElement.getKey());
 
         }
         // push in list just first nrOfMovies movies
@@ -445,8 +456,11 @@ public class Query {
         return finalList;
 
     }
-
-    public ArrayList<String> favoriteShows(int nrOfMovies, String sortType, List<String> years, List<String> gen) {
+    /**
+     * return first nrOfShows by appearing in favorite lists
+     * */
+    public final ArrayList<String> favoriteShows(final int nrOfShows, final String sortType,
+                                           final List<String> years, final List<String> gen) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Integer> favAppears = new HashMap<String, Integer>();
@@ -473,13 +487,13 @@ public class Query {
         //sort HashMap by sortType criteria
         favAppears = sortHashMapInt(favAppears, sortType);
 
-        for (Map.Entry mapElement : favAppears.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : favAppears.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
 
         // push in list just first nrOfMovies movies
         int i = 0;
-        while (i < nrOfMovies && i < auxList.size()) {
+        while (i < nrOfShows && i < auxList.size()) {
             finalList.add(auxList.get(i));
             i++;
         }
@@ -490,7 +504,8 @@ public class Query {
     /**
      * functions for sort movies and tvShow by duration
      */
-    public ArrayList<String> longestMovies(int nrOfMovies, String sortType, List<String> years, List<String> gen) {
+    public ArrayList<String> longestMovies(final int nrOfMovies, final String sortType,
+                                           final List<String> years, final List<String> gen) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Integer> longest = new HashMap<String, Integer>();
@@ -503,8 +518,8 @@ public class Query {
         //sort hashmap
         longest = sortHashMapInt(longest, sortType);
 
-        for (Map.Entry mapElement : longest.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : longest.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
         // push in list just first nrOfMovies movies
         int i = 0;
@@ -515,8 +530,11 @@ public class Query {
         return finalList;
 
     }
-
-    public ArrayList<String> longestShows(int nrOfShows, String sortType, List<String> years, List<String> gen) {
+    /**
+     * sort shows by duration
+     * */
+    public final ArrayList<String> longestShows(final int nrOfShows, final String sortType,
+                                          final List<String> years, final List<String> gen) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Integer> longest = new HashMap<String, Integer>();
@@ -531,8 +549,8 @@ public class Query {
         //sort hashmap
         longest = sortHashMapInt(longest, sortType);
 
-        for (Map.Entry mapElement : longest.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : longest.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
         // push in list just first nrOfMovies movies
         int i = 0;
@@ -547,7 +565,8 @@ public class Query {
     /**
      * functions for sort movies/tvShows by number of views
      */
-    public ArrayList<String> mostViewedMovies(int nrOfMovies, String sortType, List<String> years, List<String> gen) {
+    public ArrayList<String> mostViewedMovies(final int nrOfMovies, final String sortType,
+                                              final List<String> years, final List<String> gen) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Integer> mostView = new HashMap<String, Integer>();
@@ -567,8 +586,8 @@ public class Query {
         //sort hashmap
         mostView = sortHashMapInt(mostView, sortType);
 
-        for (Map.Entry mapElement : mostView.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : mostView.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
         // push in list just first nrOfMovies movies
         int i = 0;
@@ -578,8 +597,11 @@ public class Query {
         }
         return finalList;
     }
-
-    public ArrayList<String> mostViewedShows(int nrOfShows, String sortType, List<String> years, List<String> gen) {
+    /**
+     * returns a list with shows sorted by
+     * */
+    public final ArrayList<String> mostViewedShows(final int nrOfShows, final String sortType,
+                                             final List<String> years, final List<String> gen) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Integer> mostView = new HashMap<String, Integer>();
@@ -599,8 +621,8 @@ public class Query {
         //sort hashmap
         mostView = sortHashMapInt(mostView, sortType);
 
-        for (Map.Entry mapElement : mostView.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : mostView.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
         // push in list just first nrOfMovies movies
         int i = 0;
@@ -610,8 +632,10 @@ public class Query {
         }
         return finalList;
     }
-
-    public ArrayList<String> usersRating(int nrOfUsers, String sortType) {
+    /**
+     * returns a list with users sorted by activity
+     * */
+    public final ArrayList<String> usersRating(final int nrOfUsers, final String sortType) {
         ArrayList<String> finalList = new ArrayList<String>();
         ArrayList<String> auxList = new ArrayList<String>();
         Map<String, Integer> ratings = new HashMap<String, Integer>();
@@ -626,8 +650,8 @@ public class Query {
         //sort HashMap by 2 criteria
         ratings = sortHashMapInt(ratings, sortType);
         // transform Hashmap in a String list
-        for (Map.Entry mapElement : ratings.entrySet()) {
-            auxList.add((String) mapElement.getKey());
+        for (Map.Entry<String, Integer> mapElement : ratings.entrySet()) {
+            auxList.add(mapElement.getKey());
         }
 
         //copy first nrOfUsers elements in list

@@ -7,12 +7,12 @@ import users.User;
 import java.util.*;
 
 public class Recommandation {
-    ArrayList<User> users;
-    ArrayList<Movie> movies;
-    ArrayList<TvShow> tvShows;
+    private final ArrayList<User> users;
+    private final ArrayList<Movie> movies;
+    private final ArrayList<TvShow> tvShows;
 
-
-    public Recommandation(ArrayList<User> users, ArrayList<Movie> movies, ArrayList<TvShow> shows) {
+    public Recommandation(final ArrayList<User> users, final ArrayList<Movie> movies,
+                          final ArrayList<TvShow> shows) {
         this.users = users;
         this.movies = movies;
         this.tvShows = shows;
@@ -21,7 +21,7 @@ public class Recommandation {
     /**
      * methods for search a user and a video in db
      */
-    public User getUserInDb(String username) {
+    public User getUserInDb(final String username) {
         for (User i : users) {
             if (i.getUsername().equals(username)) {
                 return i;
@@ -29,29 +29,10 @@ public class Recommandation {
         }
         return null;
     }
-
-    public Movie getMovieInDb(String title) {
-        for (Movie i : movies) {
-            if (i.getTitle().equals(title)) {
-                return i;
-            }
-        }
-        return null;
-    }
-
-    public TvShow getSerialInDb(String title) {
-        for (TvShow i : tvShows) {
-            if (i.getTitle().equals(title)) {
-                return i;
-            }
-        }
-        return null;
-    }
-
     /**
      * return first video that don't appears in user's viewed list
      */
-    public String standard(String username) {
+    public String standard(final String username) {
         User user = null;
         if (getUserInDb(username) != null) {
             user = getUserInDb(username);
@@ -77,7 +58,7 @@ public class Recommandation {
     /**
      * method that return  best unseen video
      */
-    public String bestUnseen(String username) {
+    public String bestUnseen(final String username) {
         User user = null;
 
         if (getUserInDb(username) != null) {
@@ -110,24 +91,25 @@ public class Recommandation {
     /**
      * method for sort a HashMap with comparator
      */
-    private static Map<String, Double> sortHashMap(Map<String, Double> unsortMap, String sortType) {
+    private static Map<String, Double> sortHashMap(final Map<String, Double> unsortMap,
+                                                   final String sortType) {
         List<Map.Entry<String, Double>> list =
                 new LinkedList<Map.Entry<String, Double>>(unsortMap.entrySet());
 
         Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
-            public int compare(Map.Entry<String, Double> obj1,
-                               Map.Entry<String, Double> obj2) {
+            public int compare(final Map.Entry<String, Double> obj1,
+                               final Map.Entry<String, Double> obj2) {
                 if (!obj1.getValue().equals(obj2.getValue())) {
-                    if (sortType.equals("desc")) {
-                        return (obj2.getValue()).compareTo(obj1.getValue());
+                    if (sortType.equals("asc")) {
+                        return (obj1.getValue().compareTo(obj2.getValue()));
                     }
+                    return (obj2.getValue()).compareTo(obj1.getValue());
 
-                    return (obj1.getValue().compareTo(obj2.getValue()));
                 } else {
-                    if (sortType.equals("desc")) {
-                        return (obj2.getKey().compareTo(obj1.getKey()));
+                    if (sortType.equals("asc")) {
+                        return (obj1.getKey().compareTo(obj2.getKey()));
                     }
-                    return (obj1.getKey().compareTo(obj2.getKey()));
+                    return (obj2.getKey().compareTo(obj1.getKey()));
                 }
 
             }
@@ -140,24 +122,24 @@ public class Recommandation {
         return sortedMap;
     }
 
-    private static Map<String, Integer> sortHashMapInt(Map<String, Integer> unsortMap, String sortType) {
+    private static Map<String, Integer> sortHashMapInt(final Map<String, Integer> unsortMap,
+                                                       final String sortType) {
         List<Map.Entry<String, Integer>> list =
                 new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
 
         Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            public int compare(Map.Entry<String, Integer> obj1,
-                               Map.Entry<String, Integer> obj2) {
+            public int compare(final Map.Entry<String, Integer> obj1,
+                               final Map.Entry<String, Integer> obj2) {
                 if (!obj1.getValue().equals(obj2.getValue())) {
-                    if (sortType.equals("desc")) {
-                        return (obj2.getValue()).compareTo(obj1.getValue());
+                    if (sortType.equals("asc")) {
+                        return (obj1.getValue().compareTo(obj2.getValue()));
                     }
-
-                    return (obj1.getValue().compareTo(obj2.getValue()));
+                    return (obj2.getValue()).compareTo(obj1.getValue());
                 } else {
-                    if (sortType.equals("desc")) {
-                        return (obj2.getKey().compareTo(obj1.getKey()));
+                    if (sortType.equals("asc")) {
+                        return (obj1.getKey().compareTo(obj2.getKey()));
                     }
-                    return (obj1.getKey().compareTo(obj2.getKey()));
+                    return (obj2.getKey().compareTo(obj1.getKey()));
                 }
 
             }
@@ -169,11 +151,10 @@ public class Recommandation {
         }
         return sortedMap;
     }
-
     /**
      * Method for popular videos
      */
-    public String popularVideo(String username) {
+    public String popularVideo(final String username) {
         User user = null;
         ArrayList<String> genres = new ArrayList<String>();
         Map<String, Integer> gens = new HashMap<String, Integer>();
@@ -185,8 +166,8 @@ public class Recommandation {
                 //create a list with most popular gens
                 if (getPopularGen() != null) {
                     gens = getPopularGen();
-                    for (Map.Entry i : gens.entrySet()) {
-                        genres.add((String) i.getKey());
+                    for (Map.Entry<String, Integer> i : gens.entrySet()) {
+                        genres.add(i.getKey());
                     }
                 }
                 // test if exist a video from most popular gen unviewed
@@ -211,8 +192,9 @@ public class Recommandation {
         }
         return null;
     }
-
-    //that method return a Map with most popular genres
+    /**
+     * that method return a Map with most popular genres
+     * */
     public Map<String, Integer> getPopularGen() {
         Map<String, Integer> popular = new Hashtable<String, Integer>();
         for (Movie movie : movies) {
@@ -237,15 +219,15 @@ public class Recommandation {
                 }
             }
         }
-
         popular = sortHashMapInt(popular, "desc");
         return popular;
     }
-
-    //that method return true if a key exist in Map
-    public boolean inHashMap(Map<String, Integer> map, String key) {
+    /**
+     * that method return true if a key exist in Map
+     * */
+    public boolean inHashMap(final Map<String, Integer> map, final String key) {
         if (map != null) {
-            for (Map.Entry mapElement : map.entrySet()) {
+            for (Map.Entry<String, Integer> mapElement : map.entrySet()) {
                 if (mapElement.getKey().equals(key)) {
                     return true;
                 }
@@ -253,26 +235,30 @@ public class Recommandation {
         }
         return false;
     }
-
-    //that methods return number of a view for a video
-    public int nrOfView(Movie movie) {
+    /**
+     * that methods return number of a view for a video
+     * */
+    public int nrOfView(final Movie movie) {
         int nr = 0;
         for (User user : users) {
             nr += user.getNrOfView(movie.getTitle());
         }
         return nr;
     }
-
-    public int nrOfView(TvShow show) {
+    /**
+     * return nr of views for a show
+     * */
+    public int nrOfView(final TvShow show) {
         int nr = 0;
         for (User user : users) {
             nr += user.getNrOfView(show.getTitle());
         }
         return nr;
     }
-
-    //that method verify if a movie contains gen
-    public boolean containGen(Movie movie, String gen) {
+    /**
+     * that method verify if a movie contains gen
+     * */
+    public boolean containGen(final Movie movie, final String gen) {
         for (String str : movie.getGen()) {
             if (str.equals(gen)) {
                 return true;
@@ -280,8 +266,10 @@ public class Recommandation {
         }
         return false;
     }
-
-    public boolean containGen(TvShow show, String gen) {
+    /**
+     * method that verify if a movie contain a gen
+     * */
+    public boolean containGen(final TvShow show, final String gen) {
         for (String str : show.getGen()) {
             if (str.equals(gen)) {
                 return true;
@@ -289,11 +277,10 @@ public class Recommandation {
         }
         return false;
     }
-
     /**
      * function for favorite video
      */
-    public String favoriteVideo(String username) {
+    public String favoriteVideo(final String username) {
         User user = null;
         String mostFavorite = null;
         int mostApparences = 0;
@@ -324,9 +311,10 @@ public class Recommandation {
         }
         return mostFavorite;
     }
-
-    //that method return nr of apparences in favorite list of users
-    public int nrOfAppInFav(String title) {
+    /**
+     * that method return nr of apparences in favorite list of users
+     * */
+    public int nrOfAppInFav(final String title) {
         int nr = 0;
         for (User user : users) {
             for (String video : user.getFavoriteVideos()) {
@@ -337,11 +325,10 @@ public class Recommandation {
         }
         return nr;
     }
-
     /**
      * method for search all videos of a certain genre
      */
-    public ArrayList<String> searchVideos(String username, String gen) {
+    public ArrayList<String> searchVideos(final String username, final String gen) {
         User user = null;
         ArrayList<String> finalList = new ArrayList<String>();
         Map<String, Double> allVideos = new HashMap<String, Double>();
@@ -371,13 +358,12 @@ public class Recommandation {
                 allVideos = sortHashMap(allVideos, "asc");
 
                 //generate list
-                for (Map.Entry mapElement : allVideos.entrySet()) {
-                    finalList.add((String) mapElement.getKey());
+                for (Map.Entry<String, Double> mapElement : allVideos.entrySet()) {
+                    finalList.add(mapElement.getKey());
                 }
             }
         }
         return finalList;
     }
-
 
 }

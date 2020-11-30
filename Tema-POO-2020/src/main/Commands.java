@@ -9,20 +9,20 @@ import users.User;
 import java.util.ArrayList;
 
 public class Commands {
-    ArrayList<User> users;
-    ArrayList<Movie> movies;
-    ArrayList<TvShow> tvShows;
+    private final ArrayList<User> users;
+    private final ArrayList<Movie> movies;
+    private final ArrayList<TvShow> tvShows;
 
-    public Commands(ArrayList<User> users, ArrayList<Movie> movies, ArrayList<TvShow> tvShows) {
+    public Commands(final ArrayList<User> users, final ArrayList<Movie> movies,
+                    final ArrayList<TvShow> tvShows) {
         this.users = users;
         this.movies = movies;
         this.tvShows = tvShows;
     }
-
     /**
-     * methods for search a user and a video in db
+     * methods for search a user  in database
      */
-    public User getUserInDb(String username) {
+    public User getUserInDb(final String username) {
         for (User i : users) {
             if (i.getUsername().equals(username)) {
                 return i;
@@ -30,8 +30,10 @@ public class Commands {
         }
         return null;
     }
-
-    public Video getMovieInDb(String title) {
+    /**
+     * methods for search movie in database
+     */
+    public Video getMovieInDb(final String title) {
         for (Movie i : movies) {
             if (i.getTitle().equals(title)) {
                 return i;
@@ -39,8 +41,10 @@ public class Commands {
         }
         return null;
     }
-
-    public Video getSerialInDb(String title) {
+    /**
+     * methods for search a show in database
+     */
+    public Video getSerialInDb(final String title) {
         for (TvShow i : tvShows) {
             if (i.getTitle().equals(title)) {
                 return i;
@@ -48,17 +52,15 @@ public class Commands {
         }
         return null;
     }
-
     /**
      * method for add a video in fav list
      */
-    public int addToFavorite(String username, String title) {
+    public int addToFavorite(final String username, final String title) {
         User user = null;
 
         if (getUserInDb(username) != null) {
             user = getUserInDb(username);
         }
-
         /**
          * verify if user and video exist
          * */
@@ -73,7 +75,7 @@ public class Commands {
                 if (!user.inFavList(title)) {
                     user.addToFav(title);
                 } else {
-                    return 3;
+                    return 0;
                 }
             } else {
                 return 2;
@@ -81,8 +83,10 @@ public class Commands {
         }
         return 1;
     }
-
-    public void addToViewedList(String username, String title) {
+    /**
+     * function that add a video to a user's viewed list
+     * */
+    public final void addToViewedList(final String username, final String title) {
         User user = null;
 
         /**
@@ -109,7 +113,7 @@ public class Commands {
     /**
      * function for get nr of view of a video
      */
-    public int getNrOfViews(String username, String title) {
+    public int getNrOfViews(final String username, final String title) {
         User user = null;
         int nr = 0;
 
@@ -121,9 +125,11 @@ public class Commands {
         }
         return nr;
     }
-
-
-    public int rating(String username, String title, Double rating, int NrSez) {
+    /**
+     * function for get rating to a video
+     * */
+    public final int rating(final String username, final String title,
+                            final Double rating, final int nrSez) {
         User user = null;
         TvShow serial = null;
         Season season;
@@ -144,14 +150,14 @@ public class Commands {
             if (user.getViewedVideos().containsKey(title)) {
                 // verify if it's serial
                 if (serial != null) {
-                    season = serial.getSeason(NrSez);
+                    season = serial.getSeason(nrSez);
                     //verify if it's already rated by user
                     if (season != null && !season.getRatings().containsKey(username)) {
                         season.addRating(username, rating);
                         user.incrementRating();
                         return 1;
                     } else {
-                        return 3;
+                        return 0;
                     }
                 }
                 //verify if it's movie
@@ -162,7 +168,7 @@ public class Commands {
                         user.incrementRating();
                         return 1;
                     } else {
-                        return 3;
+                        return 0;
                     }
                 }
             } else {

@@ -2,23 +2,19 @@ package users;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import entertainment.*;
-
 public class User {
-    private ArrayList<String> favoriteVideos = new ArrayList<String>();
-    private Map<String, Integer> viewedVideos = new HashMap<>();
-    private String type;
-    private String username;
-    public int nrOfRating;
-
-
+    private  ArrayList<String> favoriteVideos = new ArrayList<String>();
+    private  Map<String, Integer> viewedVideos = new HashMap<>();
+    private final String type;
+    private final String username;
+    private int nrOfRating;
     /**
      * Constructor for User
      */
-    public User(String username, String type, ArrayList<String> fav, Map<String, Integer> map) {
+    public User(final String username, final String type, final ArrayList<String> fav,
+                final Map<String, Integer> map) {
         this.username = username;
         this.type = type;
         this.favoriteVideos = fav;
@@ -32,74 +28,47 @@ public class User {
     public String getUsername() {
         return username;
     }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     /**
      * getter and setter for favorite videos
      */
     public ArrayList<String> getFavoriteVideos() {
         return favoriteVideos;
     }
-
-    public void setFavoriteVideos(ArrayList<String> favoriteVideos) {
-        this.favoriteVideos = favoriteVideos;
-    }
-
     /**
      * getter and setter for viewed videos
      */
     public Map<String, Integer> getViewedVideos() {
         return viewedVideos;
     }
-
-    public void setViewedVideos(Map<String, Integer> viewedVideos) {
-        this.viewedVideos = viewedVideos;
-    }
-
     /**
      * getter and setter for user type
      */
     public String getType() {
         return type;
     }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     /**
      * getter and setter for nr of ratings
      */
     public int getNrOfRating() {
         return nrOfRating;
     }
-
-    public void setNrOfRating(int nrOfRating) {
-        this.nrOfRating = nrOfRating;
-    }
-
     /**
      * function for add a video in favorite list
      */
-    public void addToFav(String title) {
+    public void addToFav(final String title) {
         favoriteVideos.add(title);
     }
-
     /**
      * function for add a video in viewed list
      * (create an object and add this to list)
      */
-    public void addToViewed(String newVideo, int nrOfView) {
+    public void addToViewed(final String newVideo, final int nrOfView) {
         viewedVideos.put(newVideo, nrOfView);
     }
-
     /**
      * function for verify if a video is in fav list
      */
-    public boolean inFavList(String title) {
+    public boolean inFavList(final String title) {
         for (String i : favoriteVideos) {
             if (i.equals(title)) {
                 return true;
@@ -107,22 +76,20 @@ public class User {
         }
         return false;
     }
-
     /**
      * function for increment number of ratings
      */
     public void incrementRating() {
         this.nrOfRating++;
     }
-
     /**
      * function for get nrOfViews of a video
      */
-    public int getNrOfView(String title) {
+    public int getNrOfView(final String title) {
         int nr = 0;
-        for (Map.Entry mapElement : viewedVideos.entrySet()) {
+        for (Map.Entry<String, Integer> mapElement : viewedVideos.entrySet()) {
             if (mapElement.getKey().equals(title)) {
-                nr = (int) mapElement.getValue();
+                nr = mapElement.getValue();
                 return nr;
             }
         }
@@ -130,13 +97,12 @@ public class User {
         return nr;
 
     }
-
     /**
      * method for verify if a video it's viewed
      */
-    public boolean inViewedList(String title) {
+    public boolean inViewedList(final String title) {
         if (viewedVideos != null) {
-            for (Map.Entry mapElement : viewedVideos.entrySet()) {
+            for (Map.Entry<String, Integer> mapElement : viewedVideos.entrySet()) {
                 if (mapElement.getKey().equals(title)) {
                     return true;
                 }

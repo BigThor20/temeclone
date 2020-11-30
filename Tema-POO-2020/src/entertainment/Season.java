@@ -1,8 +1,6 @@
 package entertainment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,7 +27,9 @@ public final class Season {
         this.duration = duration;
         this.ratings = new HashMap<String, Double>();
     }
-
+    /**
+     * getters and setters
+     * */
     public int getDuration() {
         return duration;
     }
@@ -45,17 +45,20 @@ public final class Season {
     public void setRatings(final Map<String, Double> ratings) {
         this.ratings = ratings;
     }
-
-    public void addRating(String username, Double rating) {
+    /**
+     * add rating for a season
+     * */
+    public void addRating(final String username, final Double rating) {
         ratings.put(username, rating);
     }
-
-    // return average rating for a season
+    /**
+     * calculate average rating for a season
+     * */
     public Double averageRating() {
         int nr = 0;
         double soum = 0.0;
-        for (Map.Entry mapElement : ratings.entrySet()) {
-            soum = soum + (Double) mapElement.getValue();
+        for (Map.Entry<String, Double> mapElement : ratings.entrySet()) {
+            soum = soum + mapElement.getValue();
             nr++;
 
         }
